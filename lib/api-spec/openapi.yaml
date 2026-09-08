@@ -1,0 +1,145 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: inquiries
+    description: Website inquiry operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /inquiries:
+    post:
+      operationId: createInquiry
+      tags: [inquiries]
+      summary: Submit a website project inquiry
+      description: Stores a qualified project inquiry from the public Nexora Studios contact form.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InquiryInput"
+      responses:
+        "201":
+          description: Inquiry created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Inquiry"
+        "400":
+          description: Invalid inquiry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    Inquiry:
+      type: object
+      properties:
+        id:
+          type: integer
+        businessName:
+          type: string
+        contactName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: ["string", "null"]
+        website:
+          type: ["string", "null"]
+        projectType:
+          type: string
+        projectReason:
+          type: string
+        referralSource:
+          type: string
+        message:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - businessName
+        - contactName
+        - email
+        - phone
+        - website
+        - projectType
+        - projectReason
+        - referralSource
+        - message
+        - createdAt
+    InquiryInput:
+      type: object
+      properties:
+        businessName:
+          type: string
+          minLength: 2
+        contactName:
+          type: string
+          minLength: 2
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        website:
+          type: string
+        projectType:
+          type: string
+          minLength: 2
+        projectReason:
+          type: string
+          minLength: 2
+        referralSource:
+          type: string
+          minLength: 2
+        message:
+          type: string
+          minLength: 10
+      required:
+        - businessName
+        - contactName
+        - email
+        - projectType
+        - projectReason
+        - referralSource
+        - message
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+

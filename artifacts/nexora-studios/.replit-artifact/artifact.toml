@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Nexora Studios"
+description = "A high-converting studio website for selling custom websites, with a guided inquiry form that captures prospective clients and saves submissions for follow-up."
+version = "1.0.0"
+id = "artifacts/nexora-studios"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25684
+
+[services.development]
+run = "pnpm --filter @workspace/nexora-studios run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/nexora-studios", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/nexora-studios/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25684"
+BASE_PATH = "/"
